@@ -1,6 +1,9 @@
+import LoginForm from "./LoginForm";
 
 export default function LoginPage() {
   return (
-    <div>LoginPage</div>
+    <div className="flex justify-center items-center min-h-[90vh]">
+      <LoginForm />
+    </div>
   )
 }

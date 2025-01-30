@@ -15,7 +15,6 @@ export default function NavLink({
   label,
 }: Props) {
   const pathname = usePathname();
- 
 
   return (
     <NavbarItem
