@@ -1,19 +1,20 @@
 "use client"
-import { loginSchema, LoginSchemaType } from "@/lib/schemas/LoginSchema";
+import { registerSchema, RegisterSchemaType } from "@/lib/schemas/RegisterSchema";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { GiPadlock } from "react-icons/gi"
 
-const LoginForm = () => {
-    const {register, handleSubmit, formState:{errors, isValid, isSubmitting}} = useForm<LoginSchemaType>({resolver:zodResolver(loginSchema), 
+const RegisterForm = () => {
+    const {register, handleSubmit, formState:{errors, isValid, isSubmitting}} = useForm<RegisterSchemaType>({resolver:zodResolver(registerSchema), 
         defaultValues:{
+            name:"",
             email:"",
             password:""
         }
     });
 
-    const onSubmit = (data:LoginSchemaType) => {
+    const onSubmit = (data:RegisterSchemaType) => {
         console.log(data)
     }
 
@@ -24,7 +25,7 @@ const LoginForm = () => {
                     <div className="flex flex-row items-center gap-3">
                         <GiPadlock size={30}/>
                         <h1 className="text-3xl font-semibold">
-                            Login
+                            Register
                         </h1>
                     </div>
                     <p className="text-neutral-500">
@@ -35,6 +36,16 @@ const LoginForm = () => {
             <CardBody>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
+                        <Input
+                            defaultValue=""
+                            label="Name"
+                            variant="bordered"
+                            {...register('name')}
+                            isInvalid={!!errors.name}
+                            errorMessage={
+                                errors.name?.message as string
+                            }
+                            />
                         <Input
                             defaultValue=""
                             label="Email"
@@ -58,12 +69,12 @@ const LoginForm = () => {
                         />
                         <Button
                             fullWidth
-                            isLoading={isSubmitting}
                             color="default"
                             type="submit"
+                            isLoading={isSubmitting}
                             // isDisabled={!isValid}
                         >
-                            Login
+                            Register
                         </Button>
                     </div>
                 </form>
@@ -72,4 +83,4 @@ const LoginForm = () => {
     )
 }
 
-export default LoginForm
+export default RegisterForm
