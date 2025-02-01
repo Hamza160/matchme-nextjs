@@ -1,4 +1,5 @@
 "use client"
+import { registerUser } from "@/actions/authActions";
 import { registerSchema, RegisterSchemaType } from "@/lib/schemas/RegisterSchema";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +7,9 @@ import { useForm } from "react-hook-form";
 import { GiPadlock } from "react-icons/gi"
 
 const RegisterForm = () => {
-    const {register, handleSubmit, formState:{errors, isValid, isSubmitting}} = useForm<RegisterSchemaType>({resolver:zodResolver(registerSchema), 
+    const {register, handleSubmit, reset, setError, formState:{errors, isValid, isSubmitting}} = useForm<RegisterSchemaType>({
+        // resolver:zodResolver(registerSchema), 
+        mode:"onTouched",
         defaultValues:{
             name:"",
             email:"",
@@ -14,8 +17,29 @@ const RegisterForm = () => {
         }
     });
 
-    const onSubmit = (data:RegisterSchemaType) => {
-        console.log(data)
+    const onSubmit = async (data:RegisterSchemaType) => {
+        const result = await registerUser(data);
+
+        if(result.status === 'success'){
+            reset()
+            console.log("User registered successfully!");
+        }else{
+            if(Array.isArray(result.error)){
+                result.error.forEach((e:any) => {
+                    console.log("e::: ", e);
+                    const fieldName = e.path.join(".") as | "name" | "email" | "password"
+                    setError(fieldName, {
+                        message: e.message
+                    })
+                })
+            }else{
+                setError("root.serverError", {
+                    message:result.error
+                })
+            }
+        }
+
+        
     }
 
     return (
