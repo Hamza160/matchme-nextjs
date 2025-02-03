@@ -1,20 +1,29 @@
 "use client"
+import { signInUser } from "@/actions/authActions";
 import { loginSchema, LoginSchemaType } from "@/lib/schemas/LoginSchema";
 import { Button, Card, CardBody, CardHeader, Input } from "@heroui/react"
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { GiPadlock } from "react-icons/gi"
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
+    const router = useRouter()
+
     const {register, handleSubmit, formState:{errors, isValid, isSubmitting}} = useForm<LoginSchemaType>({resolver:zodResolver(loginSchema), 
         defaultValues:{
             email:"",
             password:""
         }
     });
-
-    const onSubmit = (data:LoginSchemaType) => {
-        console.log(data)
+    const onSubmit = async (data:LoginSchemaType) => {
+        const result = await signInUser(data)
+        if(result.status === 'success'){
+            router.push('/members')
+        }else{
+            toast.error(result.error as string)
+        }
     }
 
     return (

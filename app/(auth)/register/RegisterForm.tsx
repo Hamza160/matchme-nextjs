@@ -8,7 +8,7 @@ import { GiPadlock } from "react-icons/gi"
 
 const RegisterForm = () => {
     const {register, handleSubmit, reset, setError, formState:{errors, isValid, isSubmitting}} = useForm<RegisterSchemaType>({
-        // resolver:zodResolver(registerSchema), 
+        resolver:zodResolver(registerSchema), 
         mode:"onTouched",
         defaultValues:{
             name:"",
@@ -21,11 +21,10 @@ const RegisterForm = () => {
         const result = await registerUser(data);
 
         if(result.status === 'success'){
-            reset()
-            console.log("User registered successfully!");
+            console.log("User registered successfully!")
         }else{
             if(Array.isArray(result.error)){
-                result.error.forEach((e:any) => {
+                result.error.forEach(e => {
                     console.log("e::: ", e);
                     const fieldName = e.path.join(".") as | "name" | "email" | "password"
                     setError(fieldName, {
@@ -34,12 +33,10 @@ const RegisterForm = () => {
                 })
             }else{
                 setError("root.serverError", {
-                    message:result.error
+                    message: result.error
                 })
             }
         }
-
-        
     }
 
     return (
@@ -107,4 +104,4 @@ const RegisterForm = () => {
     )
 }
 
-export default RegisterForm
+export default RegisterForm;
